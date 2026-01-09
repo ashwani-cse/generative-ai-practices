@@ -12,18 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/")
-public class OpenAiController {
+public class ChatClientController {
 
     private final ChatClient chatClient;
 
-    public OpenAiController(ChatClient.Builder chatClientBuilder) {
-
-        this.chatClient = chatClientBuilder
-                .defaultSystem("""
-                        You are an HR assistant who helps in the hiring process, provides suggestions
-                        on interview questions, and evaluates candidate answers only.
-                        """)
-                .build();
+    public ChatClientController(ChatClient chatClient){
+        this.chatClient = chatClient;
     }
 
     @GetMapping("/chat")
