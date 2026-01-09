@@ -25,7 +25,7 @@ public class TokenAdvisorController {
     public String getTokenUsage(@RequestParam String message) {
         return chatClient
                 .prompt()
-                .advisors(new TokenUsagesAuditAdvisor())
+               // .advisors(new TokenUsagesAuditAdvisor()) // if you want to add advisor only for this call
                 .user(message)
                 .call()
                 .content();
