@@ -20,7 +20,7 @@ public class OpenAiController {
 
         this.chatClient = chatClientBuilder
                 .defaultSystem("""
-                        You are an HR assistant who helps in the hiring process, provides suggestions 
+                        You are an HR assistant who helps in the hiring process, provides suggestions
                         on interview questions, and evaluates candidate answers only.
                         """)
                 .build();
@@ -32,9 +32,20 @@ public class OpenAiController {
        // return chatClient.prompt(message).call().content();
 
         // add system message as HR assistant
-        return chatClient.prompt()
+        return chatClient
+                .prompt()
                // .system("You are an HR assistant who helps in the hiring process, provides suggestions on interview questions, and evaluates candidate answers only.")
                 .user(message)
+                .call()
+                .content();
+    }
+
+    @GetMapping("/chat/default-user")
+    public String chatDefaultUserMessage(@RequestParam("message") String message) {
+// user  message is ignored, default user message is used, so passing any message will have no effect
+        // and see the behavior
+        return chatClient
+                .prompt()
                 .call()
                 .content();
     }
