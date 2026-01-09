@@ -1,6 +1,8 @@
 package com.demo.openai.controller;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,12 +23,8 @@ public class PromptTemplateController {
         this.chatClient = chatClient;
     }
 
-    String promptTemplate = """
-            A customer named {customerName} has sent the following message:
-            "{customerMessage}"
-            Write a professional email response addressing the customer's concerns.
-            Respond as if you are wrting the email body only. Don't include subject or signature.
-            """;
+    @Value("classpath:/promptTemplates/userPromptTemplate.st")
+    Resource userPromptTemplate;
 
     @GetMapping("/email")
     public String generateEmail(@RequestParam("customerName") String customerName,
@@ -38,7 +36,7 @@ public class PromptTemplateController {
                         email responses to customer inquiries.
                         """)
                 .user(promptTemplateSpec ->
-                        promptTemplateSpec.text(promptTemplate)
+                        promptTemplateSpec.text(userPromptTemplate) // load template from resource
                                 .param("customerName", customerName)
                                 .param("customerMessage", customerMessage))
                 .call()
