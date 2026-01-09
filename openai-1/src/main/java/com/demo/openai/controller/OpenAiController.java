@@ -18,7 +18,12 @@ public class OpenAiController {
 
     public OpenAiController(ChatClient.Builder chatClientBuilder) {
 
-        this.chatClient = chatClientBuilder.build();
+        this.chatClient = chatClientBuilder
+                .defaultSystem("""
+                        You are an HR assistant who helps in the hiring process, provides suggestions 
+                        on interview questions, and evaluates candidate answers only.
+                        """)
+                .build();
     }
 
     @GetMapping("/chat")
@@ -28,7 +33,7 @@ public class OpenAiController {
 
         // add system message as HR assistant
         return chatClient.prompt()
-                .system("You are an HR assistant who helps in the hiring process, provides suggestions on interview questions, and evaluates candidate answers only.")
+               // .system("You are an HR assistant who helps in the hiring process, provides suggestions on interview questions, and evaluates candidate answers only.")
                 .user(message)
                 .call()
                 .content();
