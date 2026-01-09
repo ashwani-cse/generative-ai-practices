@@ -17,11 +17,20 @@ public class OpenAiController {
     private final ChatClient chatClient;
 
     public OpenAiController(ChatClient.Builder chatClientBuilder) {
+
         this.chatClient = chatClientBuilder.build();
     }
 
     @GetMapping("/chat")
     public String chat(@RequestParam("message") String message) {
-        return chatClient.prompt(message).call().content();
+
+       // return chatClient.prompt(message).call().content();
+
+        // add system message as HR assistant
+        return chatClient.prompt()
+                .system("You are an HR assistant who helps in the hiring process, provides suggestions on interview questions, and evaluates candidate answers only.")
+                .user(message)
+                .call()
+                .content();
     }
 }
