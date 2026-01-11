@@ -1,6 +1,8 @@
 package com.demo.openai.controller;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.openai.OpenAiChatOptions;
+import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Created on 09/01/26.
  */
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api")
 public class ChatClientController {
 
     private final ChatClient chatClient;
@@ -29,6 +31,7 @@ public class ChatClientController {
         return chatClient
                 .prompt()
                // .system("You are an HR assistant who helps in the hiring process, provides suggestions on interview questions, and evaluates candidate answers only.")
+              //  .options(OpenAiChatOptions.builder().model(OpenAiApi.ChatModel.GPT_5_CHAT_LATEST).build())
                 .user(message)
                 .call()
                 .content();
