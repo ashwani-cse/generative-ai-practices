@@ -4,20 +4,24 @@ spring:
   ai:
     openai:
       api-key: ${OPENAI_API_KEY:}
-# use below config to define chat options globally in properties  file
-#      chat:
-#        options:
-#          model: gpt-4o
-#          temperature: 0.7
-#          max-tokens: 1500
-#          top-p: 1.0
-#          frequency-penalty: 0.0
-#          presence-penalty: 0.0
-#          stop-sequences: []
-#          system-prompt: |
-#           You are a helpful AI assistant. Provide clear and concise answers to user queries.
+    chat:
+      memory:
+        repository:
+          jdbc:
+            initialize-schema: always
+            schema: classpath:/schema/chat_memory_schema-h2db.sql
+  datasource:
+    url: jdbc:h2:file:./chatmemory-h2db
+    driver-class-name: org.h2.Driver
+    username: SA
+    password: SA
+
 logging:
   pattern:
     console: "%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n"
   level:
     org.springframework.ai.chat.client.advisor: DEBUG
+
+# configuring H2 Db for in-memory chat history storage
+
+
