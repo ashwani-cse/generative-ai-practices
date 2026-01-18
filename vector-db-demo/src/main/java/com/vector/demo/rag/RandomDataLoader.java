@@ -11,7 +11,7 @@ import java.util.List;
  * @author Ashwani Kumar
  * Created on 18/01/26.
  */
-@Component
+//@Component
 public class RandomDataLoader {
 
     private final VectorStore vectorStore;
