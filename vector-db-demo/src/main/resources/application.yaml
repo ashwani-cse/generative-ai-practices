@@ -13,4 +13,4 @@ spring:
   docker:
     compose:
       stop:
-        command: down # down to stop and remove containers because qdrant needs fresh start
+        command: down #  to stop and remove containers because qdrant needs fresh start in our demo case
