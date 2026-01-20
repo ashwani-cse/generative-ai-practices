@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: rag-retrieval
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+    vectorstore:
+      qdrant:
+        initialize-schema: true
+        host: localhost
+        port: 6334
+        collection-name: sapience_policy_collection
+  docker:
+    compose:
+      stop:
+        command: down #  to stop and remove containers because qdrant needs fresh start in our demo case
+
+logging:
+  pattern:
+    console: "%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n"
+  level:
+    org.springframework.ai.chat.client.advisor: DEBUG # required to see logs using SimpleLoggerAdvisor
