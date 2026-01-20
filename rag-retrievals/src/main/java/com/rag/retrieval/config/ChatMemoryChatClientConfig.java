@@ -1,6 +1,7 @@
 package com.rag.retrieval.config;
 
 import com.rag.retrieval.advisors.TokenUsageAuditAdvisor;
+import com.rag.retrieval.util.PiiMaskingPostProcessor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
@@ -58,6 +59,7 @@ public class ChatMemoryChatClientConfig {
                         .similarityThreshold(0.5)
                         .build()
                 )
+                .documentPostProcessors(PiiMaskingPostProcessor.builder())
                 .build();
     }
 
