@@ -23,14 +23,17 @@ import java.util.stream.Collectors;
 public class HRPolicyRAGController {
 
     private final ChatClient chatClient;
+    private final ChatClient ragAdvisorChatClient;
     private final VectorStore vectorStore;
 
     @Value("classpath:/promptTemplates/hrPolicyDataTemplate.st")
     Resource promptTemplate;
 
     public HRPolicyRAGController(@Qualifier("chatMemoryChatClient") ChatClient chatClient,
+                                 @Qualifier("ragAdvisorChatClient") ChatClient ragAdvisorChatClient,
                                  VectorStore vectorStore) {
         this.chatClient = chatClient;
+        this.ragAdvisorChatClient = ragAdvisorChatClient;
         this.vectorStore = vectorStore;
     }
 
@@ -43,7 +46,7 @@ public class HRPolicyRAGController {
                 .similarityThreshold(0.5) // to consider the document which has a probability of 50% or more
                 .build();
 
-        List<Document> similarDocs = vectorStore.similaritySearch(searchRequest);
+        List<Document> similarDocs = vectorStore.similaritySearch(searchRequest); // get similar documents from vector store i.e. Qdrant in this case
 
         String similarContext = similarDocs.stream()
                 .map(Document::getText)
@@ -62,5 +65,25 @@ public class HRPolicyRAGController {
 
         return ResponseEntity.ok(answer);
 
+    }
+
+    /**
+     * Using RAG Advisor for retrieval augmentation, see RAGAdvisorConfig.java for configuration
+     * Purpose: To demonstrate how to use Retrieval Augmentation Advisor with Chat Client can be used to
+     * get the similar documents from vector store automatically without manual intervention in the controller code.
+     * This will reduce lot of boilerplate code in the controller.
+     *
+     */
+    @GetMapping("/advisor/hr-policy/chat")
+    public ResponseEntity<String> getHRPolicyUsingRAGAdvisor(@RequestHeader("username") String username,
+                                                                   @RequestParam("message") String message) {
+        String answer = ragAdvisorChatClient
+                .prompt()
+                .advisors(aSpec -> aSpec.param(ChatMemory.CONVERSATION_ID, username))
+                .user(message)
+                .call()
+                .content();
+
+        return ResponseEntity.ok(answer);
     }
 }

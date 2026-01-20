@@ -1,6 +1,5 @@
 package com.vector.demo.advisors;
 
-import io.micrometer.context.NonNullApi;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +15,9 @@ import org.springframework.ai.chat.model.ChatResponse;
  * @author Ashwani Kumar
  * Created on 09/01/26.
  */
-public class TokenUsagesAuditAdvisor implements CallAdvisor {
+public class TokenUsageAuditAdvisor implements CallAdvisor {
 
-    private static final Logger logger = LoggerFactory.getLogger(TokenUsagesAuditAdvisor.class);
+    private static final Logger logger = LoggerFactory.getLogger(TokenUsageAuditAdvisor.class);
 
     @Override
     public ChatClientResponse adviseCall(@NonNull ChatClientRequest chatClientRequest, CallAdvisorChain callAdvisorChain) {
