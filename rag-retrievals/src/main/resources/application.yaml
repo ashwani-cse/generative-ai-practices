@@ -8,7 +8,7 @@ spring:
 #        options:
 #          model: text-embedding-3-small
     vectorstore:
-      qdrant:s
+      qdrant:
         initialize-schema: true
         host: localhost
         port: 6334
