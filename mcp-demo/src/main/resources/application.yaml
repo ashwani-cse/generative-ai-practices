@@ -5,6 +5,11 @@ spring:
   ai:
     openai:
       api-key: ${OPENAI_API_KEY:}
+    mcp:
+      client:
+        stdio:
+          servers-configuration: classpath:mcp-servers-configuration.json
+
 
 logging:
   pattern:
