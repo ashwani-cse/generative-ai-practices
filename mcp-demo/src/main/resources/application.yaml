@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: mcp-demo
+
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+
+logging:
+  pattern:
+    console: "%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n"
+  level:
+    org.springframework.ai.chat.client.advisor: DEBUG # required to see logs using SimpleLoggerAdvisor
+
+
