@@ -7,6 +7,20 @@
         "@modelcontextprotocol/server-filesystem",
         "/Users/ashwanikumar/GenAI/mcp"
       ]
+    },
+    "github": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "Hardocde_Github_Token_Here_for_Testing_Purpose"
+      }
     }
   }
 }
