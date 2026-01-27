@@ -8,7 +8,11 @@ spring:
     mcp:
       client:
         stdio:
-          servers-configuration: classpath:mcp-servers-configuration.json
+          servers-configuration: classpath:mcp-servers-remote-configuration.json
+        sse: # for connecting mcp-server-remote to this demo application
+          connections:
+            demo-remote-server-connection: # any name we can give to connenct remote server
+              url: http://localhost:8090
 
 
 logging:
@@ -16,5 +20,3 @@ logging:
     console: "%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n"
   level:
     org.springframework.ai.chat.client.advisor: DEBUG # required to see logs using SimpleLoggerAdvisor
-
-
