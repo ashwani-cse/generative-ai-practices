@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: testing-with-evaluators
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:}
