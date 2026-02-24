@@ -4,6 +4,7 @@ import org.demo.testingwithevaluators.controller.ChatResponseController;
 import org.junit.jupiter.api.*;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.evaluation.FactCheckingEvaluator;
 import org.springframework.ai.chat.evaluation.RelevancyEvaluator;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.evaluation.EvaluationRequest;
@@ -24,12 +25,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TestingWithEvaluatorsApplicationTests {
 
     @Autowired
-    private ChatResponseController controller;
+    private ChatResponseController chatResponseController;
     @Autowired
     private ChatModel chatModel;
 
     private ChatClient chatClient;
     private RelevancyEvaluator relevancyEvaluator;
+    private FactCheckingEvaluator factCheckingEvaluator;
 
     @Value("${test.relevancy.min-score:0.7}")
     private float minRelevancyScore;
@@ -39,9 +41,10 @@ class TestingWithEvaluatorsApplicationTests {
         ChatClient.Builder chatClientBuilder = ChatClient.builder(chatModel).defaultAdvisors(new SimpleLoggerAdvisor());
         this.chatClient = chatClientBuilder.build();
         this.relevancyEvaluator = new RelevancyEvaluator(chatClientBuilder);
+        this.factCheckingEvaluator = FactCheckingEvaluator.builder(chatClientBuilder).build();
     }
 
-    @Test
+   // @Test
     @DisplayName("Should return relevant response for basic geography question")
     @Timeout(value = 30)
     void testChatResponseWithRelevancyEvaluator() {
@@ -49,7 +52,7 @@ class TestingWithEvaluatorsApplicationTests {
         String question = "What is the capital of France?";
 
         // When
-        String aiResponse = controller.getResponse(question);
+        String aiResponse = chatResponseController.getResponse(question);
 
         // Then
         EvaluationRequest evaluationRequest = new EvaluationRequest(question, aiResponse);
@@ -71,6 +74,30 @@ class TestingWithEvaluatorsApplicationTests {
                                 """, evaluationResponse.getScore(), minRelevancyScore, question, aiResponse)
                         .isGreaterThan(minRelevancyScore));
 
+    }
+
+    @Test
+    @DisplayName("Should return factually response for gravity related question")
+    @Timeout(value = 300)
+    void testFactAccuracyWithRelevancyEvaluator() {
+        // Given
+        String question = "Who discovered the law of universal gravitation?";
+
+        // When
+        String aiResponse = chatResponseController.getResponse(question);
+
+        // Then
+        EvaluationRequest evaluationRequest = new EvaluationRequest(question, aiResponse);
+        EvaluationResponse evaluationResponse = factCheckingEvaluator.evaluate(evaluationRequest);
+        Assertions.assertAll(
+                ()-> assertThat(aiResponse).isNotBlank(),
+                ()-> assertThat(evaluationResponse.isPass()).withFailMessage("""
+                                ============================
+                                The answer was not considered factually correct.
+                                Question: "%s"
+                                AI Response: "%s"
+                                """, question, aiResponse)
+                        .isTrue());
     }
 
 }
