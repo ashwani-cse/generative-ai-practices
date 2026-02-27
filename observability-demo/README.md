@@ -87,20 +87,18 @@ Spring AI → Micrometer → Actuator (`/actuator/prometheus`) → Prometheus
 2. Start your Spring Boot application and ensure the `http://localhost:8080/actuator/prometheus` endpoint is accessible
 
 ### Prometheus Configuration using docker-compose.yml
-```yaml
-version: '3.8'
-services:
-  prometheus:
-    image: prom/prometheus
-    volumes:
-      - ./prometheus-config.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
-```
-Here, 
 - volumes:- is used to mount the `prometheus-config.yml` file from your local directory to the Prometheus container. 
 - `prometheus-config.yml`:- is the configuration file for Prometheus where you specify the scrape targets (your Spring Boot application).
 - `/etc/prometheus/prometheus.yml`:- is the default location where Prometheus looks for its configuration file inside the container. 
 - ports:- is used to map the Prometheus server's port (9090) to the host machine, allowing you to access the Prometheus web interface at `http://localhost:9090`.
-- 
+- networks:- application name defined in application.yml, prometheus will use to discover the actuator endpoints.
+- bridge:- Its is default network driver for Docker containers. It creates an isolated network for the containers to communicate with each other. In this case, it allows the Prometheus container to communicate with the Spring Boot application container.
+
+### prometheus-config.yml
+- `scrape_configs`:- is a section in the Prometheus configuration file where you define the targets that Prometheus should scrape for metrics.
+- `job_name`:- is a label that identifies the scrape job. It can be any name you choose, and it helps you organize and differentiate between different scrape jobs in Prometheus.
+- `static_configs.targets`:- is a list of targets that Prometheus should scrape for metrics. In this case, it specifies the URL of the Actuator endpoint where the metrics are exposed. 
+- host.docker.internal:- is a special DNS name that allows Docker containers to access services running on the host machine. In this case, it allows the Prometheus container to access the Spring 
+  Boot application running on the host machine at port 8080.
+
 
