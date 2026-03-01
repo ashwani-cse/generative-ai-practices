@@ -94,7 +94,7 @@ Spring AI → Micrometer → Actuator (`/actuator/prometheus`) → Prometheus
 - networks:- application name defined in application.yml, prometheus will use to discover the actuator endpoints.
 - bridge:- Its is default network driver for Docker containers. It creates an isolated network for the containers to communicate with each other. In this case, it allows the Prometheus container to communicate with the Spring Boot application container.
 
-### prometheus-config.yml
+#### prometheus-config.yml
 - `scrape_configs`:- is a section in the Prometheus configuration file where you define the targets that Prometheus should scrape for metrics.
 - `job_name`:- is a label that identifies the scrape job. It can be any name you choose, and it helps you organize and differentiate between different scrape jobs in Prometheus.
 - `static_configs.targets`:- is a list of targets that Prometheus should scrape for metrics. In this case, it specifies the URL of the Actuator endpoint where the metrics are exposed. 
@@ -107,13 +107,13 @@ Spring AI → Micrometer → Actuator (`/actuator/prometheus`) → Prometheus
 - when application starts , access grafana dashboard at `http://localhost:3000` 
 - login with default credentials (admin/admin) and it ask to update creds but if want to skip then click on skip and go to home page of grafana dashboard.
 
-### Adding Prometheus as Data Source in Grafana
+#### Adding Prometheus as Data Source in Grafana
 - Click on "Add your first data source" or navigate to Connections > Data Sources > Add Data Source.
 - Select "Prometheus" from the list of available data sources.
 - In the Prometheus Server URL field enter `http://prometheus:9090` (Dont enter `localhost:9090` because in docker , the service name we defined in compose.yaml file as prometheus so grafana container can find it by its name).
 - Then click on "Save & Test" to verify the connection to Prometheus. You should see a message confirming that the data source is working.
 
-### Add Dashboard in Grafana
+#### Add Dashboard in Grafana
 - Click on Dashboards > Add Visualization
 - Select data source as Prometheus.
 - Select a metric to visualize (e.g., `gen_ai.client.token.usage`).
@@ -127,7 +127,23 @@ Spring AI → Micrometer → Actuator (`/actuator/prometheus`) → Prometheus
 - Dashboards > Select your dashboard > Click on Add dropdown > select Visualization
 - Repeat step to add metrics and visualize them in the same dashboard.
 
-### View Grafana Storage in Docker
+#### View Grafana Storage in Docker
 -  Click on Volumes
 -  Find the volume named `grafana-storage` and click on it to view its details.
 -  Even if grafana container is stopped or removed, the data in `grafana-storage` volume will persist, allowing you to retain your dashboards and configurations when you restart the container.
+
+### Tracing AI operations using OLTP and Jaeger
+- Add micrometer open-telemetry bridge dependencies `micrometer-tracing-bridge-otel` to your Spring Boot project.
+- Add open telemetry dependencies `opentelemetry-exporter-otlp`. This exporter allows you to send tracing data to an OpenTelemetry Collector or directly to a tracing backend that supports the OTLP protocol, such as Jaeger.
+
+### Jager Configuration using docker-compose.yml
+- To collect the tracing information , one such OpenSource option is Jaeger. 
+- It is a distributed tracing system that helps you monitor and troubleshoot complex microservices architectures.
+- Once you start the application, you can access the Jaeger UI at `http://localhost:16686` to view and analyze the traces of your AI operations.
+- Search for your service name (defined in application.yml) to view the traces related to your Spring Boot application.
+- Click on Find Traces to see the list of traces, and click on individual traces to view detailed information about the operations, including timing, spans, and any associated metadata.
+
+#### Find traces of rest endpoint
+- In Jaeger UI, select your service name from the dropdown.
+- Select operation "call" and click on "Find Traces" to see the list of traces related to the REST endpoint calls.
+- Trace id can be find in url when click on the trace.

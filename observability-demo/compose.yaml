@@ -17,6 +17,16 @@ services:
       - observability-demo
     ports:
       - 3000:3000
+  jagger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    networks:
+      - observability-demo
+    ports:
+      - 16686:16686 # Jaeger UI
+      - 4317:4317   # OTLP gRPC receiver for traces
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true # Enable OTLP receiver in Jaeger to receive traces from the application
 
 # Define a custom network for the application because prometheus needs to access the application metrics endpoint.
 # In a real-world scenario, you would likely have more complex network configurations and security considerations.
