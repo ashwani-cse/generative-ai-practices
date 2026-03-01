@@ -8,9 +8,21 @@ services:
       - observability-demo # This value should be the application name defined in application.yaml (spring.application.name) to make sure that prometheus can access the application metrics endpoint.
     ports:
       - 9090:9090
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    volumes:
+      - grafana-storage:/var/lib/grafana # Persist Grafana data (dashboards, etc.) in a Docker volume, even if i start the springboot application.
+    networks:
+      - observability-demo
+    ports:
+      - 3000:3000
 
 # Define a custom network for the application because prometheus needs to access the application metrics endpoint.
 # In a real-world scenario, you would likely have more complex network configurations and security considerations.
 networks:
   observability-demo:
     driver: bridge #default network driver from docker
+
+volumes:
+  grafana-storage:      # creating grafana storage with empty data

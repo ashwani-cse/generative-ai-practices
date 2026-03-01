@@ -101,4 +101,33 @@ Spring AI → Micrometer → Actuator (`/actuator/prometheus`) → Prometheus
 - host.docker.internal:- is a special DNS name that allows Docker containers to access services running on the host machine. In this case, it allows the Prometheus container to access the Spring 
   Boot application running on the host machine at port 8080.
 
+### Grafana Configuration using docker-compose.yml
+- volumes:-  storage for dashboard data to keep it persistent even if application restarts.
+- volumes.grafana-storage:- create empty storage for grafana data.
+- when application starts , access grafana dashboard at `http://localhost:3000` 
+- login with default credentials (admin/admin) and it ask to update creds but if want to skip then click on skip and go to home page of grafana dashboard.
 
+### Adding Prometheus as Data Source in Grafana
+- Click on "Add your first data source" or navigate to Connections > Data Sources > Add Data Source.
+- Select "Prometheus" from the list of available data sources.
+- In the Prometheus Server URL field enter `http://prometheus:9090` (Dont enter `localhost:9090` because in docker , the service name we defined in compose.yaml file as prometheus so grafana container can find it by its name).
+- Then click on "Save & Test" to verify the connection to Prometheus. You should see a message confirming that the data source is working.
+
+### Add Dashboard in Grafana
+- Click on Dashboards > Add Visualization
+- Select data source as Prometheus.
+- Select a metric to visualize (e.g., `gen_ai.client.token.usage`).
+- Select Label filters from dropdown to filter the metrics based on specific tags (e.g., `gen_ai.token.type`).
+- And then select filter value (e.g., `input` or `output`) to visualize only the input or output tokens.
+- Click on "Run Query" to see the graph of the selected metric.
+- After filling all the details, click on "Save Dashboard" to save your dashboard for future use.
+- To view the dashboard, navigate to Dashboards > View saved dashboard as Panel and Manage and view.
+- 
+#### Add/Develop more panels to the same dashboard to visualize other metrics
+- Dashboards > Select your dashboard > Click on Add dropdown > select Visualization
+- Repeat step to add metrics and visualize them in the same dashboard.
+
+### View Grafana Storage in Docker
+-  Click on Volumes
+-  Find the volume named `grafana-storage` and click on it to view its details.
+-  Even if grafana container is stopped or removed, the data in `grafana-storage` volume will persist, allowing you to retain your dashboards and configurations when you restart the container.
